@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLIKACZ - WERSJA 1.0</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #FFD700;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFD700;
+            font-size: 2.5em;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            border: 3px solid #FFD700;
+            padding: 20px;
+            background-color: #050505;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+        button {
+            background-color: #000000;
+            color: #FFD700;
+            border: 2px solid #FFD700;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background-color: #FFD700;
+            color: #000000;
+        }
+        .click-btn {
+            font-size: 22px;
+            padding: 15px 30px;
+            width: 80%;
+            margin: 20px auto;
+            display: block;
+        }
+        .stats {
+            font-size: 18px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>SUPER KLIKACZ</h1>
+        <p style="color: #888;">WERSJA 1.0</p>
+
+        <div class="stats">
+            🪙 Twoje złoto: <span id="stat-points">0</span><br>
+            📈 Punkty za klik: +<span id="stat-click-power">1</span>
+        </div>
+
+        <button class="click-btn" onclick="kliknij()">KLIKNIJ, ABY ZAROBIĆ!</button>
+
+        <div style="margin-top: 20px;">
+            <button onclick="kupUlepszenie()">Ulepsz klik (Koszt: <span id="btn-cost">15</span> złota)</button>
+        </div>
+    </div>
+
+    <script>
+        let punkty = 0;
+        let punktyZaKlik = 1;
+        let kosztUlepszenia = 15;
+
+        function odtworzDzwiek(czestotliwosc, czas) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "square";
+            osc.frequency.setValueAtTime(czestotliwosc, ctx.currentTime);
+            gain.gain.setValueAtTime(0.05, ctx.currentTime);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            setTimeout(() => osc.stop(), czas);
+        }
+
+        function kliknij() {
+            punkty += punktyZaKlik;
+            odtworzDzwiek(880, 20);
+            odswiezInterfejs();
+        }
+
+        function kupUlepszenie() {
+            if (punkty >= kosztUlepszenia) {
+                punkty -= kosztUlepszenia;
+                punktyZaKlik += 1;
+                kosztUlepszenia = kosztUlepszenia * 2;
+                odtworzDzwiek(440, 50);
+                setTimeout(() => odtworzDzwiek(660, 50), 50);
+                odswiezInterfejs();
+            } else {
+                alert("Masz za mało złota!");
+            }
+        }
+
+        function odswiezInterfejs() {
+            document.getElementById("stat-points").innerText = punkty;
+            document.getElementById("stat-click-power").innerText = punktyZaKlik;
+            document.getElementById("btn-cost").innerText = kosztUlepszenia;
+        }
+    </script>
+</body>
+</html>
